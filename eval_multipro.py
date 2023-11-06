@@ -27,8 +27,9 @@ from mit_semseg.lib.nn import user_scattered_collate, async_copy_to
 from mit_semseg.lib.utils import as_numpy
 from PIL import Image
 from tqdm import tqdm
+import pandas as pd
 
-colors = loadmat("data/color150.mat")["colors"]
+colors = loadmat("../color101.mat")["colors"]
 
 
 def visualize_result(data, pred, dir_result):
@@ -176,15 +177,21 @@ def main(cfg, gpus):
     for p in procs:
         p.join()
 
+    classes = pd.read_excel("../apartment0_classes.xlsx")
+    labels = list(map(int, classes["label"].tolist()))
+    label_name = classes["Name"].tolist()
+    labels = np.asarray(labels)
+    assert len(labels) == len(label_name)
+
     # summary
     iou = intersection_meter.sum / (union_meter.sum + 1e-10)
-    for i, _iou in enumerate(iou):
-        print("class [{}], IoU: {:.4f}".format(i, _iou))
+    for name, idx in zip(label_name, labels):
+        print("class [{}], IoU: {:.4f}".format(name, iou[idx]))
 
     print("[Eval Summary]:")
     print(
         "Mean IoU: {:.4f}, Accuracy: {:.2f}%".format(
-            iou.mean(), acc_meter.average() * 100
+            iou[labels - 1].sum() / len(labels), acc_meter.average() * 100
         )
     )
 
@@ -200,15 +207,15 @@ if __name__ == "__main__":
         description="PyTorch Semantic Segmentation Validation"
     )
     parser.add_argument(
+        "-c",
         "--cfg",
-        default="config/ade20k-resnet50dilated-ppm_deepsup.yaml",
+        required=True,
+        default="config/custom_ap1.yaml",
         metavar="FILE",
         help="path to config file",
         type=str,
     )
-    parser.add_argument(
-        "--gpus", default="0-3", help="gpus to use, e.g. 0-3 or 0,1,2,3"
-    )
+    parser.add_argument("--gpus", default="0", help="gpus to use, e.g. 0-3 or 0,1,2,3")
     parser.add_argument(
         "opts",
         help="Modify config options using the command-line",

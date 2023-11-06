@@ -1,7 +1,7 @@
 DATASET:
   root_dataset: ".."
-  list_train: "../out/out1/odgts/train/apartment_0.odgt"
-  list_val: "../out/out1/odgts/val/apartment_0.odgt"
+  list_train: "../out/out2/odgts/train/apartment_0.odgt"
+  list_val: "../out/out2/odgts/val/apartment_0.odgt"
   num_class: 150
   imgSizes: (300, 375, 450, 525, 600)
   imgMaxSize: 1000
@@ -15,7 +15,7 @@ MODEL:
   fc_dim: 2048
 
 TRAIN:
-  batch_size_per_gpu: 2
+  batch_size_per_gpu: 4
   num_epoch: 20
   start_epoch: 0
   epoch_iters: 5000
@@ -32,11 +32,11 @@ TRAIN:
   seed: 304
 
 VAL:
-  visualize: False
+  visualize: True
   checkpoint: "epoch_20.pth"
 
 TEST:
   checkpoint: "epoch_20.pth"
   result: "./"
 
-DIR: "ckpt/ade20k-resnet50dilated-ppm_deepsup"
+DIR: "ckpt/ade20k-resnet50dilated-ppm_deepsup_apartment_0"
