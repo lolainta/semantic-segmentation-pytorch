@@ -144,8 +144,6 @@ def main(cfg, gpus):
 
     num_files_per_gpu = math.ceil(num_files / len(gpus))
 
-    pbar = tqdm(total=num_files)
-
     acc_meter = AverageMeter()
     intersection_meter = AverageMeter()
     union_meter = AverageMeter()
@@ -164,6 +162,7 @@ def main(cfg, gpus):
 
     # master fetches results
     processed_counter = 0
+    pbar = tqdm(total=num_files)
     while processed_counter < num_files:
         if result_queue.empty():
             continue
@@ -173,7 +172,7 @@ def main(cfg, gpus):
         union_meter.update(union)
         processed_counter += 1
         pbar.update(1)
-
+    pbar.close()
     for p in procs:
         p.join()
 

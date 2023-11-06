@@ -1,7 +1,7 @@
 DATASET:
   root_dataset: ".."
   list_train: "../out/out2/odgts/train/apartment_1.odgt"
-  list_val: "../out/out2/odgts/val/apartment_1.odgt"
+  list_val: "../out/out2/odgts/val/apartment_0.odgt"
   num_class: 150
   imgSizes: (300, 375, 450, 525, 600)
   imgMaxSize: 1000
