@@ -45,8 +45,14 @@ def visualize_result(data, pred, dir_result):
     im_vis = np.concatenate((img, seg_color, pred_color), axis=1).astype(np.uint8)
 
     img_name = info.split("/")[-1]
+    os.makedirs(os.path.join(dir_result, "org"), exist_ok=True)
+    os.makedirs(os.path.join(dir_result, "semantic"), exist_ok=True)
     Image.fromarray(im_vis).save(
-        os.path.join(dir_result, img_name.replace(".jpg", ".png"))
+        os.path.join(dir_result, "org", img_name.replace(".jpg", ".png"))
+    )
+
+    Image.fromarray(pred_color).save(
+        os.path.join(dir_result, "semantic", img_name.replace(".jpg", "_pred.png"))
     )
 
 
